@@ -76,6 +76,9 @@ export default () => {
             <View style={styles.logContainer} key={String(networkIndex)}>
               <Text>{network?.url}</Text>
               <Text style={styles.logArgText}>{network?.status}</Text>
+              <Text style={styles.logArgText}>
+                {JSON.stringify(network?.response)}
+              </Text>
             </View>
           ))}
         </ScrollView>

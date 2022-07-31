@@ -10,19 +10,28 @@ export default () => {
       XMLHttpRequest.prototype.send = function () {
         const callback = this.onreadystatechange;
         this.onreadystatechange = async function (data) {
-          if (this.readyState === this.DONE) {
-            addNetwork(
-              this.responseURL,
-              this.status,
-              JSON.parse(this.response),
-            );
+          if (this.readyState === XMLHttpRequest.DONE) {
+            const url = this.responseURL;
+
+            if (url.includes('localhost:8081')) {
+              return;
+            }
+
+            const response =
+              typeof this.response === 'string'
+                ? JSON.parse(this.response)
+                : {};
+
+            addNetwork(url, this.status, response);
           }
 
           if (callback) {
             callback.apply(this, arguments);
           }
         };
-        this.responseType = '';
+        if (this.responseType === 'blob') {
+          this.responseType = '';
+        }
         send.apply(this, arguments);
       };
     })(XMLHttpRequest.prototype.send);
