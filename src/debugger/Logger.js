@@ -6,11 +6,11 @@ export default () => {
   const {addLog} = React.useContext(DebuggerContext);
 
   React.useEffect(() => {
-    var _log = console.log;
+    const originLog = console.log;
 
     console.log = function (message, ...args) {
       addLog(message, args);
-      _log.apply(console, arguments);
+      originLog.apply(this, arguments);
     };
   }, [addLog]);
 

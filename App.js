@@ -27,7 +27,7 @@ const App = () => {
     const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function () {
       if (xhr.readyState === XMLHttpRequest.DONE) {
-        console.log('hinodi XMLHttpRequest OK', xhr.response);
+        console.log('hinodi XMLHttpRequest OK', JSON.parse(xhr.response));
       }
     };
     xhr.open(
