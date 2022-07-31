@@ -5,4 +5,6 @@ export const DebuggerContext = React.createContext({
   networks: [],
   addLog: () => {},
   addNetwork: () => {},
+  clearLog: () => {},
+  clearNetwork: () => {},
 });

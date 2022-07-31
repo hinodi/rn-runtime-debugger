@@ -16,6 +16,9 @@ export default class Debugger extends React.Component {
       networks: [...networks, {url, status, response}],
     }));
 
+  clearLog = () => this.setState({logs: []});
+  clearNetwork = () => this.setState({networks: []});
+
   render() {
     return (
       <DebuggerContext.Provider
@@ -24,6 +27,8 @@ export default class Debugger extends React.Component {
           networks: this.state.networks,
           addLog: this.addLog,
           addNetwork: this.addNetwork,
+          clearLog: this.clearLog,
+          clearNetwork: this.clearNetwork,
         }}>
         <Logger />
         <Network />
