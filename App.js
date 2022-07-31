@@ -2,6 +2,7 @@ import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import axios from 'axios';
 import Frisbee from 'frisbee';
+import superagent from 'superagent';
 
 import Debugger from './src/debugger';
 import Counter from './src/components/Counter';
@@ -50,6 +51,13 @@ const App = () => {
       .get('https://jsonplaceholder.typicode.com/todos/1?frisbee')
       .then(function (response) {
         console.log('hinodi frisbee OK', response.body);
+      })
+      .catch(console.error);
+
+    superagent
+      .get('https://jsonplaceholder.typicode.com/todos/1?superagent')
+      .then(function (response) {
+        console.log('hinodi superagent OK', response.body);
       })
       .catch(console.error);
   }, []);
