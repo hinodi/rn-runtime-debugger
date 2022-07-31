@@ -1,12 +1,18 @@
 import React from 'react';
 
-import {DebuggerContext} from './context';
-import Logger from './Logger';
-import Network from './Network';
-import DebuggerContent from './DebuggerContent';
+import {consoleOverride} from './override/log';
+import {fetchOverride, XMLHttpRequestOverride} from './override/network';
+
+import DebuggerUI from './DebuggerUI';
 
 export default class Debugger extends React.Component {
   state = {logs: [], networks: []};
+
+  componentDidMount() {
+    consoleOverride(this.addLog);
+    XMLHttpRequestOverride(this.addNetwork);
+    fetchOverride(this.addNetwork);
+  }
 
   addLog = (message, args) =>
     this.setState(({logs}) => ({logs: [...logs, {message, args}]}));
@@ -20,21 +26,17 @@ export default class Debugger extends React.Component {
   clearNetwork = () => this.setState({networks: []});
 
   render() {
+    const {logs, networks} = this.state;
     return (
-      <DebuggerContext.Provider
-        value={{
-          logs: this.state.logs,
-          networks: this.state.networks,
-          addLog: this.addLog,
-          addNetwork: this.addNetwork,
-          clearLog: this.clearLog,
-          clearNetwork: this.clearNetwork,
-        }}>
-        <Logger />
-        <Network />
+      <>
         {this.props.children}
-        <DebuggerContent />
-      </DebuggerContext.Provider>
+        <DebuggerUI
+          logs={logs}
+          networks={networks}
+          clearLog={this.clearLog}
+          clearNetwork={this.clearNetwork}
+        />
+      </>
     );
   }
 }
