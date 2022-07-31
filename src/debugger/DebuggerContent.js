@@ -22,7 +22,7 @@ export default () => {
     );
   }
 
-  const {logs} = React.useContext(DebuggerContext);
+  const {logs, networks} = React.useContext(DebuggerContext);
 
   if (tab === 0) {
     return (
@@ -38,9 +38,29 @@ export default () => {
               <Text>{log?.message}</Text>
               {log?.args.map((arg, argIndex) => (
                 <Text key={String(argIndex)} style={styles.logArgText}>
-                  {arg}
+                  {JSON.stringify(arg)}
                 </Text>
               ))}
+            </View>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  }
+
+  if (tab === 1) {
+    return (
+      <View style={styles.maximizedView}>
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={() => setIsMinimized(true)}>
+          <Text>Close</Text>
+        </TouchableOpacity>
+        <ScrollView>
+          {networks?.map((network, networkIndex) => (
+            <View style={styles.logContainer} key={String(networkIndex)}>
+              <Text>{network?.url}</Text>
+              <Text style={styles.logArgText}>{network?.status}</Text>
             </View>
           ))}
         </ScrollView>
@@ -75,7 +95,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   logContainer: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
   },
   logArgText: {
     marginLeft: 4,
