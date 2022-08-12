@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {
   ScrollView,
+  Share,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -32,6 +33,33 @@ export default class DebuggerUI extends Component {
     }
   };
 
+  copyAsCURL = network => () => {
+    const {url, method, headers, body} = network;
+
+    const curlRequest = method?.toUpperCase() || 'GET';
+    const curlData = body ? ` --data '${body}'` : '';
+
+    const curlHeaders = (() => {
+      if (!headers || typeof headers !== 'object') {
+        return null;
+      }
+
+      return Object.entries(headers);
+    })();
+
+    const curl = `curl --request ${curlRequest} \\
+    --url ${url} ${curlHeaders ? '\\' : ''}
+    ${curlHeaders?.map(
+      ([key, value], index) =>
+        `--header '${key}: ${value}' ${
+          index < curlHeaders?.length - 1 ? '\\' : curlData ? '\\' : ''
+        }`,
+    )}
+    ${curlData}`;
+
+    Share.share({message: curl});
+  };
+
   render() {
     const {logs, networks} = this.props;
     const {isMinimized, tab} = this.state;
@@ -59,12 +87,12 @@ export default class DebuggerUI extends Component {
           <TouchableOpacity
             style={styles.closeButton}
             onPress={this.onClearPress}>
-            <Text>Clear</Text>
+            <Text style={styles.whileText}>Clear</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.closeButton}
             onPress={this.onMinimizePress}>
-            <Text>Close</Text>
+            <Text style={styles.whileText}>Close</Text>
           </TouchableOpacity>
         </View>
         {tab === tabs[0] && (
@@ -85,11 +113,17 @@ export default class DebuggerUI extends Component {
           <ScrollView>
             {networks?.map((network, networkIndex) => (
               <View style={styles.logContainer} key={String(networkIndex)}>
+                <Text style={styles.logArgText}>{network?.method}</Text>
                 <Text>{network?.url}</Text>
                 <Text style={styles.logArgText}>{network?.status}</Text>
                 <Text style={styles.logArgText}>
                   {JSON.stringify(network?.response)}
                 </Text>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={this.copyAsCURL(network)}>
+                  <Text style={styles.whileText}>Copy as cURL</Text>
+                </TouchableOpacity>
               </View>
             ))}
           </ScrollView>
@@ -140,5 +174,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 0.5,
+  },
+  whileText: {
+    color: 'white',
   },
 });

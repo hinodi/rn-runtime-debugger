@@ -17,9 +17,9 @@ export default class Debugger extends React.Component {
   addLog = (message, args) =>
     this.setState(({logs}) => ({logs: [...logs, {message, args}]}));
 
-  addNetwork = (url, status, response) =>
+  addNetwork = (url, status, response, method, headers, body) =>
     this.setState(({networks}) => ({
-      networks: [...networks, {url, status, response}],
+      networks: [...networks, {url, status, response, method, headers, body}],
     }));
 
   clearLog = () => this.setState({logs: []});

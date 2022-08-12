@@ -38,6 +38,20 @@ const App = () => {
     );
     xhr.send();
 
+    fetch('https://jsonplaceholder.typicode.com/posts', {
+      method: 'POST',
+      body: JSON.stringify({
+        title: 'foo',
+        body: 'bar',
+        userId: 1,
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    })
+      .then(response => response.json())
+      .then(json => console.log('hinodi fetch POST ok', json));
+
     axios
       .get('https://jsonplaceholder.typicode.com/todos/1?axios')
       .then(function (response) {
@@ -46,7 +60,6 @@ const App = () => {
       .catch(console.error);
 
     const frisbee = new Frisbee({});
-
     frisbee
       .get('https://jsonplaceholder.typicode.com/todos/1?frisbee')
       .then(function (response) {
